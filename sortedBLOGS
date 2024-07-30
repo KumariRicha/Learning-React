@@ -1,0 +1,82 @@
+import { useEffect, useState } from 'react';
+import './App.css';
+
+let data=[
+  {
+    id:1,
+    title:"Post 1",
+    rating: 1,
+    url:'post1.com'
+  },
+  {
+    id:2,
+    title:"Post 2",
+    rating: 3,
+    url:'post2.com'
+  },
+  {
+    id:3,
+    title:"Post 3",
+    rating: 0,
+    url:'post3.com'
+  }
+]
+
+function App() {
+
+  let [posts, setPosts]= useState(data);
+
+  function sort(updatedPost){
+    return [...updatedPost.sort((a,b)=>b.rating - a.rating)]
+  }
+
+  useEffect(()=>{
+    setPosts(sort(posts))
+  },[])
+
+  function upvote(editPost){
+    editPost.rating++;
+    let updatedPost = posts.map(post=>
+      post.id === editPost.id?editPost:post
+    )
+    setPosts(sort(updatedPost))
+  }
+  function downVote(editPost){
+    editPost.rating--;
+    let updatedPost = posts.map(post=>
+      post.id === editPost.id?editPost:post
+    )
+    setPosts(sort(updatedPost))
+  }
+
+  return (
+    <>
+    {
+      posts.map(post=>{
+
+        return <Blog 
+        key={post.id}
+        title={post.title}
+        rating={post.rating}
+        upvote={()=>upvote(post)}
+        downvote={()=>downVote(post)}
+         />
+      })
+    }
+    </>
+  )
+}
+
+function Blog({title,rating, upvote, downvote}){
+return(
+  <div style={{minWidth:'300px', padding:'8px', border:'2px solid gray', borderRadius:'4px', marginBottom:'4px'}}>
+    <h3 style={{ backgroundColor:'darkslategray', color:'white'}}>{title}</h3>
+    <div style={{display:'flex',justifyContent:'space-evenly'}}>
+      <button style={{ backgroundColor:'green'}} onClick={upvote}>Upvote</button>
+      {rating}
+      <button style={{ backgroundColor:'red'}} onClick={downvote}>Downvote</button>
+    </div>
+  </div>
+)
+}
+export default App
