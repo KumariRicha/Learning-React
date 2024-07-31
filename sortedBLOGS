@@ -58,6 +58,7 @@ function App() {
         key={post.id}
         title={post.title}
         rating={post.rating}
+        url={post.url}
         upvote={()=>upvote(post)}
         downvote={()=>downVote(post)}
          />
@@ -67,10 +68,10 @@ function App() {
   )
 }
 
-function Blog({title,rating, upvote, downvote}){
+function Blog({title,rating,url, upvote, downvote}){
 return(
   <div style={{minWidth:'300px', padding:'8px', border:'2px solid gray', borderRadius:'4px', marginBottom:'4px'}}>
-    <h3 style={{ backgroundColor:'darkslategray', color:'white'}}>{title}</h3>
+    <h3 style={{ backgroundColor:'darkslategray', color:'white'}}><a href={url} style={{ color:'white'}}>{title}</a></h3>
     <div style={{display:'flex',justifyContent:'space-evenly'}}>
       <button style={{ backgroundColor:'green'}} onClick={upvote}>Upvote</button>
       {rating}
