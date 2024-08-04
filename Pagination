@@ -1,0 +1,57 @@
+import React, { useEffect, useState } from 'react';
+import './App.css';
+function App() {
+  let URL = 'https://dummyjson.com/products';
+  let [products, setProducts] = useState([])
+  let [ page, setPage] = useState(1);
+
+  async function getData(){
+    let res = await fetch(URL);
+    let data  = await res.json();
+    if(data && data.products)
+    setProducts(data.products)
+  }
+
+  useEffect(()=>{
+    getData();
+  },[])
+
+function changePage(page){
+  console.log("page: ",page)
+  setPage(page)
+}
+
+  return (
+   <>
+    <h3 style={{textAlign:'center'}}>List of Items</h3>  
+    <div>
+    {
+        products.length >0 &&(
+          <div className='products'>
+            {
+              products.slice(page*3-3,page*3).map((prod)=>{
+                return<div className='single' key={prod.title}>
+                  <img src={prod.thumbnail} alt={prod.title}/>
+                  <span>{prod.title}</span>
+                </div>
+              })
+            }
+        </div>
+        )
+      }
+      <div className="pagination">
+        <button onClick={()=>{setPage(prevState =>prevState-1)}} disabled={page === 1?true:false}>⏮️</button>
+        {
+          [...Array(products.length/3)].map((_,index)=>{
+            return <button onClick={()=>{changePage(index+1)}} style={{backgroundColor: index+1 === page?'lightGray':''}}>{index+1}</button>
+          })
+        }        
+        <button onClick={()=>{setPage(prevState =>prevState+1)}} disabled={page === (products.length/3)?true:false}>⏭️</button>
+      </div>
+    </div>   
+    </>
+  )
+}
+
+
+export default App;
