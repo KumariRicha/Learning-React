@@ -1,0 +1,74 @@
+import React, { useState } from 'react';
+import './App.css';
+import questions from './assets/questions.json';
+
+
+function App() {
+  let [qIndex, setQindex] = useState(0);
+  let [answer, setAnswer] = useState([]);
+
+  function clickHandler(isCorrect) {
+    setAnswer([...answer,isCorrect])  
+    setQindex(qIndex + 1);
+  }
+
+  function reset(){
+    setQindex(0);
+    setAnswer([])
+  }
+
+  return (
+    <>      
+      {qIndex < questions.length? <Question qts={questions[qIndex]}
+        clickHandler={clickHandler}
+      /> : <Result
+       answer={answer}
+       ques={questions}
+       reset={reset}
+      
+      />}
+    </>
+  )
+}
+
+
+export default App
+
+function Question({ qts, clickHandler }) {
+
+  return (
+    <>
+    <h1> Welcome to the Quiz</h1>    
+    <div style={{ minWidth: '60%', margin: "20px auto", border: '2px solid purple', borderRadius: '4px' }}>
+      <h3 style={{ marginBottom: '8px' ,color:'purple'}}>{qts.question}</h3>
+      <ul className='option'>
+        {
+          qts.answerOptions.map((option) => {
+            return <li key={option.text}>
+              <button onClick={() => clickHandler(option.isCorrect)}
+              >{option.text}</button>
+            </li>
+          })
+        }
+      </ul>
+    </div>
+    </>
+  )
+}
+
+function Result({answer, ques,reset}) { 
+  let score = answer.filter(value=>value).length;
+  return (
+    <div className='result'>
+      <h1>Your result score is: {score}/{answer.length}</h1>
+      <ul>
+        {
+          ques.map((qts, index)=>{
+            return <li key={index} data-correct={answer[index]}>{qts.question}</li>
+          })
+        }
+      </ul>
+      <button onClick={reset} style={{backgroundColor:'purple', color:'white'}}>Click here to retry!!!!</button>
+    </div>
+  )
+}
