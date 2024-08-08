@@ -1,0 +1,82 @@
+import { useEffect, useState, useRef } from 'react';
+import { styled } from '@mui/material';
+import './App.css';
+
+
+function App() {
+  const [value, setValue] = useState(0);
+  const intervalRef = useRef(null);
+  // useEffect(() => {
+  //   setInterval(() => setValue(val => val + 1), 100)
+  // }, [])
+
+  useEffect(() => {
+    // Start the interval
+    intervalRef.current = setInterval(() => {
+      setValue(prevValue => {
+        if (prevValue >= 100) { // Stop at 100
+          clearInterval(intervalRef.current);
+          return 100;
+        }
+        return prevValue + 1;
+      });
+    }, 100);
+
+    // Clean up interval on component unmount
+    return () => clearInterval(intervalRef.current);
+  }, []);
+
+  return (
+    <>
+      <div>
+        <Progressbar value={value} />
+      </div>
+    </>
+  )
+}
+
+function Progressbar({ value }) {
+
+  const [percent, setPercent] = useState(value);
+
+  useEffect(() => {
+    setPercent(Math.min(100, Math.max(value, 0)));
+  }, [value])
+
+  const Container = styled('div')({
+    border: '1px solid',
+    height: '20px',
+    width: '500px',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: '15px',
+    overflow:'hidden',
+    position: 'relative'
+  });
+
+  const Progressbar = styled('span')({
+    position: 'relative',
+    width:'100%',
+    display:'flex',
+    justifyContent:'center',
+    alignItems:'center',
+    zIndex:'1'
+  })
+
+  const Fill = styled('div')({
+    height: '100%',
+    backgroundColor: '#00c251',
+    position:'absolute',
+    left: '0',
+    top:'0'
+  })
+  return (    
+    <Container>
+      <Progressbar style={{color:percent>49?'white':'black'}}>{percent.toFixed()}%</Progressbar>
+      <Fill style={{ width:`${percent}%`}}/>
+    </Container>
+  )
+}
+
+export default App;
