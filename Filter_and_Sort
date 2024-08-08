@@ -1,0 +1,53 @@
+let URL = 'https://dummyjson.com/products';
+  const [products, setProducts] = useState([]);
+  const [titles, setTitles] = useState(products);
+
+  async function fetchData(){
+    let response = await fetch(URL);
+    let data = await response.json();
+   if(data &&data.products){
+    setProducts(data.products.slice(0,15))
+   }
+  }
+
+  useEffect(()=>{
+    fetchData();
+    setTitles(products);
+  },[])
+
+  function search(e){
+    let value = e.target.value.toLowerCase();
+    let List = products.filter(product=> {
+      if(product.title.toLowerCase().includes(value))
+        return product;
+    });
+    setTitles(List) 
+  }
+
+  function sortByID(){
+    let List = [...titles].sort((a,b)=>b.id -a.id);
+    console.log('sortByID: ',List)
+    setTitles(List) 
+  }
+  function sortByTitle(){
+    let List = [...titles].sort((a,b)=>a.title.localeCompare(b.title));
+    console.log('sortByTitle: ',List)
+    setTitles(List) 
+  }
+  return (
+    <>
+    <input type='text' onChange={(e)=>{search(e)}} style={{marginRight:'8px'}} autoFocus/>
+    <button style={{marginRight:'8px'}} onClick={sortByID}>Sort By Id</button>
+    <button style={{marginRight:'8px'}} onClick={sortByTitle}>Sort By Title</button>
+      {/* <Login/> */}
+      <ul>
+      {
+        titles.length>0 && titles.map((product)=>{return <li style={{listStyle:'none'}} key={product.title}><span style={{marginRight:'8px'}}>{product.id}</span>{product.title}</li>})
+      }
+      </ul>
+    </>
+  )
+}
+
+
+export default App;
