@@ -1,0 +1,26 @@
+import React, { useState, createContext, useContext } from 'react';
+const Theme = React.createContext();
+
+function App(){
+ const [isThemeDark, setTheme] = useState(false);
+return (
+    <>
+      <button onClick={changeTheme}>Change to {isThemeDark ? 'Light 🌞' : 'Dark 🌚'}</button>
+      <Theme.Provider value={isThemeDark}>
+        <Themecomponent />
+      </Theme.Provider>
+    </>)
+}
+
+function Themecomponent() {
+  const isThemeDark = useContext(Theme);
+  
+
+  return (<>
+    <div style={{ width: '250px', height: '200px', border: '2px solid',
+      backgroundColor:isThemeDark?'black':'white',
+      color:isThemeDark?'white':'black'
+    }}> Current theme: {isThemeDark?'Dark':'Light'}</div>
+  </>
+  )
+}
